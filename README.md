@@ -20,30 +20,53 @@ checklist, rather than trusting judgment alone.
 ## Structure
 
 ```
-AGENTS.md               lean root instructions, read natively by Codex, Cursor,
-                         Copilot, Windsurf, Zed, Aider, Gemini/Jules, VS Code, JetBrains
-CLAUDE.md                one line, @AGENTS.md — Claude Code doesn't read AGENTS.md
-                         natively as of writing, so this bridges the two
-CONTEXT.md              domain glossary + standing risk-surface questions
-CODING_STANDARDS.md     smell baseline the review skill checks every diff against
-docs/adr/               decision records, one per resolved risk-surface question
-skills/
-  router/                 flow map across every skill below — read this when unsure what's next
-  grilling/               interview-before-code: build the design tree, ask, don't guess
-  domain-modeling/        keep CONTEXT.md and terminology honest as the model changes
-  codebase-design/        deep-module vocabulary: module, interface, seam, depth, leverage
-  tdd/                    red/green loop, seam discipline, named test anti-patterns
-  prototype/              throwaway code to answer a design question before committing to a build
-  research/               R&D against primary sources, cited findings feed back into grilling
-  diagnosing-bugs/        gated red/green loop for hard bugs, no hypothesizing without it
-  resolving-merge-conflicts/  resolve by intent traced to primary sources, never --abort
-  code-review/            two-axis diff review: Standards + Spec, severity-tiered output
-  improve-architecture/   scan for deepening opportunities using codebase-design vocabulary
-  triage/                 state machine for issues and PRs that arrived raw
-  decision-record/        running log of decisions, failures, and constraints, updated as they happen
-  deployment-readiness/   pre-deploy gate: migration, rollback, parity, observability
-  release-management/     versioning, approval gates, post-release verification, rollback triggers
-  git-safety/             enforced hook blocking force-push, reset --hard, clean -f, branch -D
+sed@sed:~/Desktop/agent-context$ tree
+.
+├── AGENTS.md
+├── CLAUDE.md
+├── CODING_STANDARDS.md
+├── CONTEXT.md
+├── docs
+│   └── adr
+│       └── 0000-template.md
+├── README.md
+├── README.pdf
+└── skills
+    ├── codebase-design
+    │   └── SKILL.md
+    ├── code-review
+    │   └── SKILL.md
+    ├── decision-record
+    │   └── SKILL.md
+    ├── deployment-readiness
+    │   └── SKILL.md
+    ├── diagnosing-bugs
+    │   └── SKILL.md
+    ├── domain-modeling
+    │   └── SKILL.md
+    ├── git-safety
+    │   ├── scripts
+    │   │   └── block-dangerous-git.sh
+    │   └── SKILL.md
+    ├── grilling
+    │   └── SKILL.md
+    ├── improve-architecture
+    │   └── SKILL.md
+    ├── prototype
+    │   └── SKILL.md
+    ├── release-management
+    │   └── SKILL.md
+    ├── research
+    │   └── SKILL.md
+    ├── resolving-merge-conflicts
+    │   └── SKILL.md
+    ├── router
+    │   └── SKILL.md
+    ├── tdd
+    │   └── SKILL.md
+    └── triage
+        └── SKILL.md
+
 ```
 
 ## Install
@@ -84,11 +107,3 @@ git-safety). Short version:
    respectively.
 6. **`git-safety`** is installed once, not run per task — it's a standing
    gate underneath everything else.
-
-## Credit
-
-Interview-as-design-tree, gated bug-diagnosis phases, and two-axis review
-are adapted from [mattpocock/skills](https://github.com/mattpocock/skills).
-Severity-tier output format (🔴/🟡/✅) and review-category breadth are
-adapted from GitHub's Copilot code-review prompt convention. Deployment
-readiness and release management are original to this kit.
