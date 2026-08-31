@@ -37,6 +37,26 @@ of re-raising it every review.
   — callers reach past the interface to get real work done, or two
   supposedly-independent adapters silently share mutable state.
 
+## System smells (see `skills/system-design/SKILL.md` for the vocabulary)
+
+- **Unbounded Wait**: a call across a process or network boundary with no
+  timeout. The default in most clients is to wait forever, which turns a
+  slow dependency into a stalled caller and then into a stalled system.
+- **Blind Retry**: a retry with no backoff, no cap, or on an operation
+  whose idempotency nobody established. Retrying a struggling dependency
+  harder is how a slowdown becomes an outage.
+- **Unbounded Buffer**: a queue, list, cache, or accumulating attribute
+  with a producer and a consumer running at independent rates, and no
+  stated bound, eviction, or rejection path. "It won't grow that fast" is
+  a capacity assumption, and it belongs in the record as one.
+- **Shared Write Site**: two components writing the same state with the
+  boundary between them described as if only one owned it. Flag the claim,
+  not just the code.
+- **Unversioned Contract**: a payload, wire format, stored representation,
+  or topic/queue name changing shape with no version marker and no stated
+  reader on the far side. Related to Version Skew Blind Spot below, which
+  is about the rollout; this is about the contract itself.
+
 ## Deployment smells
 
 - **Migration Without Rollback**: a schema or data migration with no stated
