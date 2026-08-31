@@ -11,9 +11,13 @@ that turn shallow modules into deep ones. The aim is testability and
 navigability for whoever — human or agent — touches this code next.
 
 Use the `codebase-design` vocabulary exactly (module, interface, depth,
-seam, adapter, leverage, locality) in every finding. Read `CONTEXT.md` and
-any ADRs in the area first — this pass proposes refactors, it doesn't
-re-litigate decisions already recorded.
+seam, adapter, leverage, locality) in every finding — and the
+`system-design` vocabulary (boundary, contract, consistency, backpressure,
+idempotency) where the friction is *between* components rather than inside
+one. Read `CONTEXT.md` and any ADRs in the area first — this pass proposes
+refactors, it doesn't re-litigate decisions already recorded. Check
+`docs/questions/` too: an assumption recorded there that the code has since
+outgrown is exactly the kind of thing this pass exists to catch.
 
 ## Scope before scanning
 

@@ -21,10 +21,13 @@ reports "no spec available" instead of failing.
 ## 2. Standards axis
 
 Read `CODING_STANDARDS.md` in full: the Fowler baseline plus this repo's
-risk-surface and deployment smells. A documented ADR accepting a tradeoff
-suppresses that smell; cite the ADR instead of re-flagging it.
+risk-surface, system, and deployment smells. A documented ADR accepting a
+tradeoff suppresses that smell; cite the ADR instead of re-flagging it. An
+open `docs/questions/` entry does not suppress a smell — it means the
+answer was assumed, so check the diff against what that entry says it
+assumed, and flag any divergence.
 
-Check the diff against six areas:
+Check the diff against seven areas:
 
 1. **Security**: input validation, auth/authorization, data exposure, the
    Trust-on-Read and Unbounded Exposure smells specifically.
@@ -39,7 +42,13 @@ Check the diff against six areas:
 5. **Testing & documentation**: coverage of the changed behavior, comment
    necessity and clarity, the Implied Protection smell specifically where
    docs overclaim a guarantee.
-6. **Deployment readiness**: if the diff touches a migration, a shared
+6. **System behavior**: if the diff crosses a process, service, or
+   independent-rate boundary, check it against the system smells —
+   Unbounded Wait, Blind Retry, Unbounded Buffer, Shared Write Site,
+   Unversioned Contract. Ask what a caller does when the dependency is
+   slow rather than down; "it fails" is only an answer if there's a
+   timeout. If the diff stays inside one process, say so and skip.
+7. **Deployment readiness**: if the diff touches a migration, a shared
    contract, config, or a network-facing surface, check it against the
    deployment smells in `CODING_STANDARDS.md`. If nothing in the diff
    reaches production directly, say so and skip.
