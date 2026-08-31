@@ -5,10 +5,12 @@ description: Maintain a running decision record for the work — decisions, fail
 
 # Maintaining a Decision Record
 
-Keep one file as the running record of the work. Set these two lines per
-project and leave the rest unchanged:
+Keep one file as the running record of the work. Default to
+`docs/record.md`; override it per project by setting these two lines and
+leaving the rest unchanged:
 
-- **File:** `<path>` (e.g. `docs/spec.md`, `NOTES.md`, `record.md`)
+- **File:** `docs/record.md` (or `docs/spec.md`, `NOTES.md` — one file,
+  named once, not a new one per session)
 - **Subject:** what the work produces (e.g. a codebase, a dataset, an
   infrastructure estate, a report, a set of experiments)
 
@@ -33,6 +35,46 @@ have been a major or hard-to-reverse decision, promote it: write the ADR,
 and replace the entry here with a pointer to it. Don't let something
 load-bearing sit buried in a long chronological file when it should be
 independently citable.
+
+## Tag every entry
+
+Prefix each entry with what kind of claim it is. Four tags, and the
+distinction between them is the entire point of the record:
+
+- **FACT** — observed. You ran it, read it, measured it, or found it in a
+  primary source. A fact carries its evidence: the command, the log line,
+  the file and line, the source.
+- **DECISION** — chosen. Carries the alternative that lost and why, and
+  who made the call if it wasn't you.
+- **ASSUMPTION** — believed, not verified. Carries what would falsify it
+  and what breaks if it's wrong. This is the tag that matters most.
+- **UNKNOWN** — an open question. If it's blocking or load-bearing, it
+  belongs in `docs/questions/` as well, with this entry pointing at it.
+
+```
+FACT (2026-03-04) — Broker rejects payloads over 128 KB. Verified: publish
+of a 131,072-byte payload returned RC 2 in mqtt_client.py:212.
+
+ASSUMPTION — Topic count grows monotonically and is never pruned.
+Falsified by: any delete path on the registry. Breaks: the incremental
+chunk index, which only ever appends. Cost: moderate.
+```
+
+An untagged record is the failure mode this exists to prevent. Read back
+by a later session — or a later agent — an assumption written in the same
+voice as a fact *becomes* a fact, and nothing downstream ever re-checks it.
+That is how a system ends up resting on something nobody verified and
+nobody remembers choosing.
+
+Two rules follow from this:
+
+- **Never promote a tag silently.** An ASSUMPTION becomes a FACT only when
+  someone verifies it, and the entry then carries the evidence and the date
+  it was checked. Editing the tag without doing the work is worse than
+  leaving it wrong, because it launders the uncertainty.
+- **Demote when confidence drops.** If a FACT turns out to have rested on
+  reasoning rather than observation, retag it ASSUMPTION and say what
+  prompted the change.
 
 ## What belongs in it
 
@@ -64,9 +106,9 @@ independently citable.
 - **Update in place.** When something is superseded, rewrite that entry and
   say what changed it. Do not append a new section that contradicts an
   older one and leave both standing.
-- **Record only what you verified.** If a claim rests on reasoning rather
-  than on something you actually observed, say so in the text. Never write
-  a measurement you did not take.
+- **Record only what you verified**, or tag it ASSUMPTION. Never write a
+  measurement you did not take, and never write one without saying how it
+  was taken.
 - **Correct the record when you are wrong**, in the record itself. Quietly
   dropping a mistake teaches the next reader nothing and costs them the
   same discovery.
@@ -78,6 +120,7 @@ independently citable.
 ## The failure to avoid
 
 A record that describes intentions rather than reality. A file claiming
-something is finished when it is not, or naming something that no longer
-exists, is worse than no file: it is trusted and wrong. Whenever you touch
-it, make sure every claim in it still holds.
+something is finished when it is not, naming something that no longer
+exists, or stating an assumption in the register of a fact, is worse than
+no file: it is trusted and wrong. Whenever you touch it, make sure every
+claim in it still holds and still carries the right tag.
