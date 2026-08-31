@@ -4,8 +4,9 @@
 
 ## Context
 
-What forced this decision. Which `CONTEXT.md` risk-surface or
-deployment-surface question this resolves, if any.
+What forced this decision. Which `CONTEXT.md` risk-, system-, or
+deployment-surface question this resolves, if any, and which
+`docs/questions/` entry it closes, if any.
 
 ## Decision
 
