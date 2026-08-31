@@ -29,6 +29,34 @@ for the thing being built, not a default assumed.
 - **Convention**: does a sibling module, repo, or prior ADR already solve an
   adjacent version of this problem? Point to it or note there's none.
 
+## System Surface
+
+Standing frontier nodes for `grilling` when a change spans more than one
+module, process, or service, or introduces a new one. Same rule: explicit
+answer required, not a default. The discipline and vocabulary behind these
+live in `skills/system-design/SKILL.md`.
+
+- **Boundaries**: what are the components, and what does each own
+  exclusively? If two of them write the same state, say so — that's a
+  shared variable, not a boundary.
+- **Data flow**: for each piece of state, where is it written and where is
+  it read? Which of those two sites does the derivation work, and why that
+  one?
+- **Consistency**: what is a reader guaranteed to see while a write is in
+  flight? Name the guarantee; "eventually" is an answer, silence is not.
+- **Partial failure**: for each dependency, what happens when it is *slow*
+  rather than down — timeout, retry policy, retry safety (idempotency),
+  circuit breaker, and what the caller does instead?
+- **Backpressure**: when work arrives faster than it drains, what gives —
+  memory growth, dropped work, blocked producers, or explicit rejection?
+  Unbounded growth is the answer you get by not choosing one.
+- **Capacity**: what drives growth here (users, devices, time, retained
+  history), and what breaks first at 10x that? Is the growth bounded by
+  anything, or only by the system's lifetime?
+- **Contracts**: what shape crosses a boundary (payload, wire format,
+  stored representation, topic or queue name), who else already depends on
+  it, and is it versioned?
+
 ## Deployment Surface
 
 Standing frontier nodes for `grilling` when the change reaches a shared or
@@ -47,13 +75,26 @@ before implementation starts, not just before shipping it.
   way to limit exposure (flag, canary, percentage rollout) rather than an
   all-or-nothing cutover?
 
-Once a risk-surface or deployment-surface question gets a real answer worth
-remembering, record it as `docs/adr/NNNN-<decision>.md` instead of leaving
-it implicit here. For smaller decisions, failures, constraints, and open
-questions that come up while doing the work but aren't individually
-load-bearing enough for their own ADR, use `skills/decision-record/SKILL.md`'s
-running record instead — see that skill for the boundary between the two.
+These three surfaces produce three different artifacts, and mixing them up
+is how context gets lost:
+
+- An answer that is load-bearing or hard to reverse becomes an ADR,
+  `docs/adr/NNNN-<decision>.md`. It needs to be independently citable —
+  `code-review` cites one to suppress a smell it would otherwise flag.
+- A question that *cannot* be answered yet is not a default and does not
+  evaporate. It becomes `docs/questions/NNNN-<slug>.md`, stating what was
+  assumed in its place and what breaks if that assumption is wrong. See
+  `skills/grilling/SKILL.md`.
+- Everything smaller — the decision that isn't load-bearing, the failure
+  that cost an afternoon, the constraint invisible in the finished result —
+  goes in the running record, `skills/decision-record/SKILL.md`. Promote an
+  entry out of it the moment it turns out to matter more than it looked.
 
 ## System model
 
-<!-- Diagrams, module boundaries, data flow, as they get established. -->
+The answers to the System Surface questions above, once they settle:
+component boundaries, data flow, consistency guarantees, failure posture,
+capacity assumptions. Keep it current — a system model that describes an
+intended architecture rather than the running one is trusted and wrong.
+
+<!-- Diagrams, component boundaries, data flow, as they get established. -->
