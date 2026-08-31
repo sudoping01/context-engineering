@@ -6,28 +6,37 @@ disable-model-invocation: true
 
 # Router
 
-Nobody remembers fourteen skills. This is the map.
+Nobody remembers seventeen skills. This is the map.
 
 ## Main flow: idea to shipped
 
 1. **`grilling`** sharpens the idea by interview, pulling `CONTEXT.md`'s
-   standing Risk Surface and Deployment Surface questions in automatically.
+   standing Risk, System, and Deployment Surface questions in
+   automatically.
    Settle every branch before code exists.
-2. **Can every open question be settled in conversation?** If one needs a
-   runnable answer (a state model, a UI, business logic that's hard to
-   reason about on paper), detour through **`prototype`** — throwaway code
-   that answers exactly that question, then folds the verdict back in.
-3. **Build.** `tdd` drives the red/green loop at the seams agreed in step 1.
-4. **`code-review`** before merge — two-axis, Standards + Spec, against
+2. **Does the change span more than one module, process, or service?**
+   Then it's system-shaped, and **`system-design`** supplies the frontier
+   nodes `grilling` asks: boundaries, data flow, consistency, what happens
+   when a dependency is slow rather than down, backpressure, capacity,
+   contracts. This is the layer `codebase-design` (one module) and
+   `deployment-readiness` (one rollout) both sit beside, not inside.
+3. **Can every open question be settled in conversation?** If one needs a
+   runnable answer (a state model, a UI, load or failure behavior, business
+   logic that's hard to reason about on paper), detour through
+   **`prototype`** — throwaway code that answers exactly that question,
+   then folds the verdict back in. If one can't be settled at all, it
+   becomes a `docs/questions/` entry, not a silent default.
+4. **Build.** `tdd` drives the red/green loop at the seams agreed in step 1.
+5. **`code-review`** before merge — two-axis, Standards + Spec, against
    `CODING_STANDARDS.md` and the originating spec.
-5. **`deployment-readiness`** before the change reaches shared or
+6. **`deployment-readiness`** before the change reaches shared or
    production infrastructure. **`release-management`** for the release
    itself and the window after it ships.
 
 ## On-ramps: things that feed into the main flow
 
 - **A pile of bug reports or feature requests that arrived raw** →
-  **`triage`**. Produces agent-ready issues that step 3 picks up. Don't
+  **`triage`**. Produces agent-ready issues that step 4 picks up. Don't
   triage work you already scoped yourself in step 1 — that's already
   agent-ready.
 - **Something's broken and doesn't yield to a quick look** →
@@ -47,7 +56,7 @@ Nobody remembers fourteen skills. This is the map.
 
 ## Vocabulary underneath
 
-Two references other skills pull in; reach for them directly when the
+Three references other skills pull in; reach for them directly when the
 words are the problem, not the process.
 
 - **`domain-modeling`**: keeps `CONTEXT.md`'s glossary honest. The active
@@ -55,16 +64,27 @@ words are the problem, not the process.
 - **`codebase-design`**: the deep-module vocabulary (module, interface,
   seam, adapter, depth, leverage, locality) for a module's *shape*. `tdd`,
   `code-review`, and `improve-architecture` all speak it.
+- **`system-design`**: the vocabulary one level up (boundary, contract,
+  consistency, backpressure, cascading failure, idempotency) for how the
+  parts fit and how the whole degrades. Reach for it directly when the
+  question is about the space *between* modules, not inside one.
 
-## Running record
+## Where knowledge goes
 
-- **`decision-record`**: the running log of decisions, failures,
-  constraints, and open questions discovered while doing the work — updated
-  the moment they happen, not in a tidy-up pass at the end. Distinct from
-  `docs/adr/`: an ADR is for the load-bearing, hard-to-reverse decisions;
-  the decision record is for everything smaller that still shouldn't be
-  lost. Promote an entry to its own ADR the moment it turns out to matter
-  more than it looked.
+Three artifacts, three jobs. Putting something in the wrong one is how it
+gets lost.
+
+- **`docs/adr/`** — answers that are load-bearing or hard to reverse.
+  Individually citable; `code-review` cites one to suppress a smell.
+- **`docs/questions/`** — questions `grilling` *couldn't* settle, each with
+  what was assumed in its place and what breaks if that's wrong. An
+  unanswered question that isn't written down becomes an invented answer.
+- **`decision-record`** — the running log of everything smaller: decisions
+  with their rejected alternative, failures with their evidence, invisible
+  constraints. Updated the moment they happen, not in a tidy-up pass.
+  Every entry tagged FACT / DECISION / ASSUMPTION / UNKNOWN, because an
+  assumption written in the voice of a fact becomes one. Promote an entry
+  out to an ADR the moment it turns out to matter more than it looked.
 
 ## Standalone
 
